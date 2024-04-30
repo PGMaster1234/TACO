@@ -8,3 +8,4 @@ Download Annotations file from https://github.com/pedropro/TACO/tree/master/data
 python downloadingOfficialImages.py --dataset_path <PATH_TO_ANNOATIONS_FILE>
 ```
 Then proceed to run playaround.ipynb
+ - Data splitting can be augmented by changing the trainTestValCumulativeSplit variable
