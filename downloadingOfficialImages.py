@@ -10,7 +10,7 @@ parser = argparse.ArgumentParser(description="")
 parser.add_argument(
     "--dataset_path",
     required=False,
-    default=os.path.join(os.path.expanduser("~"), "./data/annotations.json"),
+    default=os.path.join(os.path.expanduser("~"), "/data/annotations.json"),
     help="Path to annotations",
 )
 args = parser.parse_args()

@@ -4,31 +4,45 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+from PIL import Image, ExifTags
+from pycocotools.coco import COCO
+from matplotlib.patches import Polygon, Rectangle
+from matplotlib.collections import PatchCollection
+import colorsys
+import random
+import pylab
 
+# Path to the dataset and annotations
 dataset_path = "data"
-anns_file_path = dataset_path + '/annotations.json'
+anns_file_path = os.path.join(dataset_path, 'annotations.json')
 
 # Read annotations
 with open(anns_file_path, 'r') as f:
-    dataset = json.loads(f.read())
+    dataset = json.load(f)
 
 categories = dataset['categories']
 anns = dataset['annotations']
 imgs = dataset['images']
+
+# Filter images to only include those in batch_1/train
+batch_folder = 'batch_1'
+filtered_imgs = [img for img in imgs if batch_folder in img['file_name']]
+
+# Summary statistics
 nr_cats = len(categories)
 nr_annotations = len(anns)
-nr_images = len(imgs)
+nr_images = len(filtered_imgs)
 
-# Load categories and super categories
+# Extract category and supercategory names
 cat_names = []
 super_cat_names = []
 super_cat_ids = {}
 super_cat_last_name = ''
 nr_super_cats = 0
+
 for cat_it in categories:
     cat_names.append(cat_it['name'])
     super_cat_name = cat_it['supercategory']
-    # Adding new supercat
     if super_cat_name != super_cat_last_name:
         super_cat_names.append(super_cat_name)
         super_cat_ids[super_cat_name] = nr_super_cats
@@ -40,87 +54,64 @@ print('Number of categories:', nr_cats)
 print('Number of annotations:', nr_annotations)
 print('Number of images:', nr_images)
 
-# Count annotations
+# Count annotations per category
 cat_histogram = np.zeros(nr_cats, dtype=int)
 for ann in anns:
     cat_histogram[ann['category_id']] += 1
 
-# Initialize the matplotlib figure
+# Plot the histogram of annotations per category
 f, ax = plt.subplots(figsize=(5, 15))
-
-# Convert to DataFrame
 df = pd.DataFrame({'Categories': cat_names, 'Number of annotations': cat_histogram})
 df = df.sort_values('Number of annotations', ascending=False)
-
-# Plot the histogram
 sns.set_color_codes("pastel")
 sns.set(style="darkgrid")
 plot_1 = sns.barplot(x="Number of annotations", y="Categories", data=df, label="Total", color="b")
-
-# plt.show()
-# fig = plot_1.get_figure()
-# fig.savefig("output.png")
-
-
-from PIL import Image, ExifTags
-from pycocotools.coco import COCO
-from matplotlib.patches import Polygon, Rectangle
-from matplotlib.collections import PatchCollection
-import colorsys
-import random
-import pylab
-
-# User settings
-image_filename = 'batch_1/000000.jpg'
-pylab.rcParams['figure.figsize'] = (28, 28)
-####################
+plt.show()
 
 # Obtain Exif orientation tag code
 for orientation in ExifTags.TAGS.keys():
     if ExifTags.TAGS[orientation] == 'Orientation':
         break
 
-# Loads dataset as a coco object
+# Load dataset as a COCO object
 coco = COCO(anns_file_path)
 
-# Find image id
-img_id = -1
-for img in imgs:
-    if img['file_name'] == image_filename:
-        img_id = img['id']
-        break
+# Randomly select 12 images from batch_1/train
+selected_imgs = random.sample(filtered_imgs, min(12, len(filtered_imgs)))
 
-# Show image and corresponding annotations
-if img_id == -1:
-    print('Incorrect file name')
-else:
+# Display images and corresponding annotations in a 3x4 grid
+fig, axes = plt.subplots(3, 4, figsize=(20, 15))
+axes = axes.flatten()
 
+for ax, img in zip(axes, selected_imgs):
+    img_id = img['id']
+    image_filename = img['file_name']
+    
+    # Find batch folder from image filename
+    image_path = os.path.join(dataset_path, image_filename)
+    
     # Load image
-    print(image_filename.split('/'))
-    I = Image.open(dataset_path + '/' + image_filename.split('/')[0] + '/train/' + image_filename.split('/')[1])
-
+    I = Image.open(image_path)
+    
     # Load and process image metadata
     if I._getexif():
         exif = dict(I._getexif().items())
-        # Rotate portrait and upside down images if necessary
         if orientation in exif:
             if exif[orientation] == 3:
                 I = I.rotate(180, expand=True)
-            if exif[orientation] == 6:
+            elif exif[orientation] == 6:
                 I = I.rotate(270, expand=True)
-            if exif[orientation] == 8:
+            elif exif[orientation] == 8:
                 I = I.rotate(90, expand=True)
-
+    
     # Show image
-    fig, ax = plt.subplots(1)
-    plt.axis('off')
-    plt.imshow(I)
-
-    # Load mask ids
+    ax.axis('off')
+    ax.imshow(I)
+    
+    # Load and show annotations
     annIds = coco.getAnnIds(imgIds=img_id, catIds=[], iscrowd=None)
     anns_sel = coco.loadAnns(annIds)
-
-    # Show annotations
+    
     for ann in anns_sel:
         color = colorsys.hsv_to_rgb(np.random.random(), 1, 1)
         for seg in ann['segmentation']:
@@ -133,4 +124,5 @@ else:
         rect = Rectangle((x, y), w, h, linewidth=2, edgecolor=color, facecolor='none', alpha=0.7, linestyle='--')
         ax.add_patch(rect)
 
-    plt.show()
+plt.tight_layout()
+plt.show()
