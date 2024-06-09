@@ -1,0 +1,69 @@
+@misc{
+taco---uav_dataset,
+title = { Taco + UAV Dataset },
+type = { Open Source Dataset },
+author = { Litter },
+howpublished = { \url{ https://universe.roboflow.com/litter/taco---uav } },
+url = { https://universe.roboflow.com/litter/taco---uav },
+journal = { Roboflow Universe },
+publisher = { Roboflow },
+year = { 2022 },
+month = { apr },
+note = { visited on 2024-06-09 },
+}
+
+@misc{
+    test5-le7yx_dataset,
+    title = { test5 Dataset },
+    type = { Open Source Dataset },
+    author = { rutws },
+    howpublished = { \url{ https://universe.roboflow.com/rutws/test5-le7yx } },
+    url = { https://universe.roboflow.com/rutws/test5-le7yx },
+    journal = { Roboflow Universe },
+    publisher = { Roboflow },
+    year = { 2024 },
+    month = { jun },
+    note = { visited on 2024-06-05 },
+}
+
+@misc{
+    trash_segmentation2_dataset,
+    title = { trash_segmentation2 Dataset },
+    type = { Open Source Dataset },
+    author = { Sara Najafi },
+    howpublished = { \url{ https://universe.roboflow.com/sara-najafi/trash_segmentation2 } },
+    url = { https://universe.roboflow.com/sara-najafi/trash_segmentation2 },
+    journal = { Roboflow Universe },
+    publisher = { Roboflow },
+    year = { 2022 },
+    month = { sep },
+    note = { visited on 2024-06-05 },
+}
+
+@misc{
+    kuku-hkgh8_dataset,
+    title = { kuku Dataset },
+    type = { Open Source Dataset },
+    author = { zuzu },
+    howpublished = { \url{ https://universe.roboflow.com/zuzu-eanw6/kuku-hkgh8 } },
+    url = { https://universe.roboflow.com/zuzu-eanw6/kuku-hkgh8 },
+    journal = { Roboflow Universe },
+    publisher = { Roboflow },
+    year = { 2024 },
+    month = { feb },
+    note = { visited on 2024-06-05 },
+}
+
+@misc{
+    beach_waste_combine_dataset,
+    title = { beach_waste_combine Dataset },
+    type = { Open Source Dataset },
+    author = { rutws },
+    howpublished = { \url{ https://universe.roboflow.com/rutws/beach_waste_combine } },
+    url = { https://universe.roboflow.com/rutws/beach_waste_combine },
+    journal = { Roboflow Universe },
+    publisher = { Roboflow },
+    year = { 2024 },
+    month = { may },
+    note = { visited on 2024-06-05 },
+}
